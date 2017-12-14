@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--/*@thymesVar id="moviedbcollection" type="szymaniak.movieapp.model.MovieDBSummary.MovieDBSummaryCollection"*/-->
+<h1>Found <label th:text="${moviedbcollection.totalResults}" >LICZBA_WYNIKOW</label> results! </h1>
+<h2>Displaying results:</h2>
+<table>
+    <thead>
+    <tr>
+        Title
+    </tr>
+    <tr>
+        Original Title
+    </tr>
+    <tr>
+        Poster
+    </tr>
+    </thead>
+    <tr th:each="moviedbsummary : ${moviedbcollection.movieList}">
+        <td th:text="${moviedbsummary.title}">Title</td>
+        <td th:text="${moviedbsummary.originalTitle}">Original Title</td>
+        <td><img th:src="@{http://image.tmdb.org/t/p/w185/__${moviedbsummary.posterPath}__}"></td>
+    </tr>
+</table>
+</body>
+</html>

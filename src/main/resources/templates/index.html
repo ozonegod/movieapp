@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+</head>
+<body>
+    <form action="#" th:action="@{/processForm}" method="post" th:object="${searchMovie}" >
+        <div>
+            <label th:text="Title">Type movie title you are looking for</label>
+            <input type="text" th:field="*{title}" th:value="title" />
+            <td><input type="submit" value="Submit" /></td>
+        </div>
+    </form>
+</body>
+</html>
