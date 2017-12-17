@@ -23,18 +23,19 @@ public class MovieDBServiceImpl implements MovieDBService {
     }
 
     @Override
-    public MovieDB createCompleteMovie(String title) {
+    public MovieDB createCompleteMovie(String title, int page) {
         MovieDB movieDB = new MovieDB();
-        MovieDBSummaryCollection movieDBSummaryCollection = findMovieByTitle(title);
+        MovieDBSummaryCollection movieDBSummaryCollection = findMovieByTitle(title, page);
         return movieDB;
     }
 
     @Override
-    public MovieDBSummaryCollection findMovieByTitle(String title) {
+    public MovieDBSummaryCollection findMovieByTitle(String title, int page) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder
                 .fromUriString(api_url)
                 .queryParam("query", title)
-                .queryParam("api_key", api_key);
+                .queryParam("api_key", api_key)
+                .queryParam("page", page);
 
         ResponseEntity<MovieDBSummaryCollection> movies = restTemplate.getForEntity(uriBuilder.toUriString(), MovieDBSummaryCollection.class);
         return movies.getBody();

@@ -6,6 +6,7 @@
 </head>
 <body>
 <!--/*@thymesVar id="moviedbcollection" type="szymaniak.movieapp.model.MovieDBSummary.MovieDBSummaryCollection"*/-->
+<a href="/">Home</a>
 <h1>Found <label th:text="${moviedbcollection.totalResults}" >LICZBA_WYNIKOW</label> results! </h1>
 <h2>Displaying results:</h2>
 <table>
@@ -26,5 +27,7 @@
         <td><img th:src="@{http://image.tmdb.org/t/p/w185/__${moviedbsummary.posterPath}__}"></td>
     </tr>
 </table>
+<a th:href="@{results(page=${moviedbcollection.page} - 1, title=${title})}" th:if="${1 &lt; moviedbcollection.page}" >Previous page</a>
+<a th:href="@{results(page=${moviedbcollection.page} + 1, title=${title})}" th:if="${moviedbcollection.totalPages &gt; moviedbcollection.page}" >Next page</a>
 </body>
 </html>

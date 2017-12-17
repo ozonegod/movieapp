@@ -2,10 +2,7 @@ package szymaniak.movieapp.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import szymaniak.movieapp.dto.SearchMovieDTO;
 import szymaniak.movieapp.service.MovieDBService;
 
@@ -26,8 +23,16 @@ public class HomeController {
     }
 
     @PostMapping(value = "/processForm")
-    public String showView(@ModelAttribute SearchMovieDTO searchMovieDTO, Model model){
-        model.addAttribute("moviedbcollection", movieDBService.findMovieByTitle(searchMovieDTO.getTitle()));
+    public String showMovies(@ModelAttribute SearchMovieDTO searchMovieDTO, Model model){
+        model.addAttribute("moviedbcollection", movieDBService.findMovieByTitle(searchMovieDTO.getTitle(), 1));
+        model.addAttribute("title", searchMovieDTO.getTitle());
+        return "movie/result.html";
+    }
+
+    @GetMapping(value = "/results")
+    public String showMoviesByPage(Model model, @RequestParam int page, @RequestParam String title){
+        model.addAttribute("moviedbcollection", movieDBService.findMovieByTitle(title, page));
+        model.addAttribute("title", title);
         return "movie/result.html";
     }
 }
