@@ -20,11 +20,15 @@
     <tr>
         Poster
     </tr>
+    <tr>
+        View
+    </tr>
     </thead>
     <tr th:each="moviedbsummary : ${moviedbcollection.movieList}">
         <td th:text="${moviedbsummary.title}">Title</td>
         <td th:text="${moviedbsummary.originalTitle}">Original Title</td>
         <td><img th:src="@{http://image.tmdb.org/t/p/w185/__${moviedbsummary.posterPath}__}"></td>
+        <td><a href="#" th:href="@{'/movie/' + ${moviedbsummary.id}}" role="button">View</a></td>
     </tr>
 </table>
 <a th:href="@{results(page=${moviedbcollection.page} - 1, title=${title})}" th:if="${1 &lt; moviedbcollection.page}" >Previous page</a>

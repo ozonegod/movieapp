@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDB;
+import szymaniak.movieapp.model.MovieDBSummary.MovieDBDetailed;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBSummaryCollection;
 
 @Service
@@ -27,6 +29,16 @@ public class MovieDBServiceImpl implements MovieDBService {
         MovieDB movieDB = new MovieDB();
         MovieDBSummaryCollection movieDBSummaryCollection = findMovieByTitle(title, page);
         return movieDB;
+    }
+
+    @Override
+    public MovieDBDetailed findMovieDetails(String id) {
+        UriComponents uriBuilder = UriComponentsBuilder
+                .fromUriString("https://api.themoviedb.org/3/movie/{id}")
+                .queryParam("api_key", api_key)
+                .build().expand(id).encode();
+
+        return restTemplate.getForObject(uriBuilder.toUriString(), MovieDBDetailed.class);
     }
 
     @Override
