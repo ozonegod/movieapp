@@ -24,14 +24,14 @@ public class HomeController {
 
     @PostMapping(value = "/processForm")
     public String showMovies(@ModelAttribute SearchMovieDTO searchMovieDTO, Model model){
-        model.addAttribute("moviedbcollection", movieDBService.findMovieByTitle(searchMovieDTO.getTitle(), 1));
+        model.addAttribute("moviedbcollection", movieDBService.findMoviesByTitle(searchMovieDTO.getTitle(), 1));
         model.addAttribute("title", searchMovieDTO.getTitle());
         return "movie/result.html";
     }
 
     @GetMapping(value = "/results")
     public String showMoviesByPage(Model model, @RequestParam int page, @RequestParam String title){
-        model.addAttribute("moviedbcollection", movieDBService.findMovieByTitle(title, page));
+        model.addAttribute("moviedbcollection", movieDBService.findMoviesByTitle(title, page));
         model.addAttribute("title", title);
         return "movie/result.html";
     }

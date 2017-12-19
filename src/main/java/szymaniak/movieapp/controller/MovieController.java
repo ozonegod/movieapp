@@ -4,23 +4,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import szymaniak.movieapp.model.MovieDBSummary.MovieDBDetailed;
-import szymaniak.movieapp.service.MovieDBService;
+import szymaniak.movieapp.service.MovieService;
 
 @Controller
 @RequestMapping(value = "/movie")
 public class MovieController {
 
-    private MovieDBService movieDBService;
+    private MovieService movieService;
 
-    public MovieController(MovieDBService movieDBService) {
-        this.movieDBService = movieDBService;
+    public MovieController(MovieService movieService) {
+        this.movieService = movieService;
     }
 
     @GetMapping(value="/{id}")
     public String showDetailsOfMovie(@PathVariable String id){
-        MovieDBDetailed movieDetails = movieDBService.findMovieDetails(id);
-
+        movieService.createMovie(id);
         return "movie/details.html";
     }
 }

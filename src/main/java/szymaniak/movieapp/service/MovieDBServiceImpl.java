@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-import szymaniak.movieapp.model.MovieDBSummary.MovieDB;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBDetailed;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBSummaryCollection;
 
@@ -25,16 +24,9 @@ public class MovieDBServiceImpl implements MovieDBService {
     }
 
     @Override
-    public MovieDB createCompleteMovie(String title, int page) {
-        MovieDB movieDB = new MovieDB();
-        MovieDBSummaryCollection movieDBSummaryCollection = findMovieByTitle(title, page);
-        return movieDB;
-    }
-
-    @Override
     public MovieDBDetailed findMovieDetails(String id) {
         UriComponents uriBuilder = UriComponentsBuilder
-                .fromUriString("https://api.themoviedb.org/3/movie/{id}")
+                .fromUriString(String.format("%smovie/{id}", api_url))
                 .queryParam("api_key", api_key)
                 .build().expand(id).encode();
 
@@ -42,9 +34,9 @@ public class MovieDBServiceImpl implements MovieDBService {
     }
 
     @Override
-    public MovieDBSummaryCollection findMovieByTitle(String title, int page) {
+    public MovieDBSummaryCollection findMoviesByTitle(String title, int page) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder
-                .fromUriString(api_url)
+                .fromUriString(String.format("%ssearch/movie", api_url))
                 .queryParam("query", title)
                 .queryParam("api_key", api_key)
                 .queryParam("page", page);

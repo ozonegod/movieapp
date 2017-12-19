@@ -71,6 +71,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>info.talacha</groupId>
+			<artifactId>FilmwebApi</artifactId>
+			<version>0.3.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
