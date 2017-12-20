@@ -6,6 +6,8 @@
 </head>
 <body>
 <!--/*@thymesVar id="movie" type="szymaniak.movieapp.model.domain.Movie"*/-->
-    <label th:text="${movie.title}" >LICZBA_WYNIKOW</label>
+    <label th:text="${movie.polishTitle}" >Movie - Title</label>
+    <br>
+    <label th:text="${movie.releaseDate}" >Movie - Release Data</label>
 </body>
 </html>
