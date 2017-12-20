@@ -1,5 +1,6 @@
 package szymaniak.movieapp.model.domain;
 
+import info.talacha.filmweb.models.Person;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,7 +8,7 @@ import java.net.URL;
 
 @Entity
 @Data
-public class Actor implements PersonInformation {
+public class Actor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,7 +18,13 @@ public class Actor implements PersonInformation {
     private String name;
     private URL photoUrl;
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="id", insertable = false, updatable = false)
     private Movie movie;
 
+    public Actor(Person person) {
+        this.role = person.getRole();
+        this.info = person.getInfo();
+        this.name = person.getName();
+        this.photoUrl = person.getPhotoUrl();
+    }
 }

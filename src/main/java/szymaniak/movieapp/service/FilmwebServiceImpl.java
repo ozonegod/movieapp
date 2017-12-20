@@ -3,19 +3,17 @@ package szymaniak.movieapp.service;
 import info.talacha.filmweb.api.FilmwebApi;
 import info.talacha.filmweb.connection.FilmwebException;
 import info.talacha.filmweb.models.Film;
-import info.talacha.filmweb.models.Person;
 import info.talacha.filmweb.models.Profession;
 import info.talacha.filmweb.search.models.FilmSearchResult;
 import org.springframework.stereotype.Service;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBDetailed;
 import szymaniak.movieapp.model.domain.Actor;
-import szymaniak.movieapp.model.domain.PersonInformation;
+import szymaniak.movieapp.model.domain.Director;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -34,11 +32,10 @@ public class FilmwebServiceImpl implements FilmwebService {
     }
 
     @Override
-    public FilmSearchResult findMovieByOriginalTitle(MovieDBDetailed movieDBDetailed, List<FilmSearchResult> filmSearchResults) {
-        Supplier<FilmSearchResult> filmSearchResultSupplier = () -> filmSearchResults.stream().filter(filmSearchResult -> movieDBDetailed.getTitle().equals(filmSearchResult.getTitle())).findFirst().orElse(filmSearchResults.isEmpty()? null: filmSearchResults.get(0));
+    public Optional<FilmSearchResult> findMovieByTitle(String movieTitle, List<FilmSearchResult> filmSearchResults) {
+
         return filmSearchResults.stream()
-                .filter(filmSearchResult -> movieDBDetailed.getTitle().equals(filmSearchResult.getTitle()) && movieDBDetailed.getOriginalTitle().equals(filmSearchResult.getAlternativeTitle()))
-                .findFirst().orElseGet(filmSearchResultSupplier);
+                .filter(filmSearchResult -> filmSearchResult.getPolishTitle().equals(movieTitle)).findFirst();
     }
 
     @Override
@@ -52,21 +49,22 @@ public class FilmwebServiceImpl implements FilmwebService {
     }
 
     @Override
-    public Set<PersonInformation> findCrewByRole(Long id, Profession role, PersonInformation crewMember) {
-        Function<Person, PersonInformation> parseToCrewMember = person -> {
-            crewMember.setId(person.getId());
-            crewMember.setInfo(person.getInfo());
-            crewMember.setName(person.getName());
-            crewMember.setPhotoUrl(person.getPhotoUrl());
-            crewMember.setRole(person.getRole());
-            return crewMember;
-        };
+    public Set<Actor> findActors(Long id){
         try {
-            return filmwebApi.getPersons(id, role, 0, 10).stream().map(parseToCrewMember).collect(Collectors.toSet());
+            return filmwebApi.getPersons(id, Profession.ACTOR, 0, 15).stream().map(Actor::new).collect(Collectors.toSet());
         } catch (FilmwebException e) {
-            e.printStackTrace(); //TODO
+            e.printStackTrace();
         }
         return Collections.emptySet();
     }
 
+
+    public Set<Director> findDirectors(Long id) {
+        try {
+            return filmwebApi.getPersons(id, Profession.DIRECTOR, 0, 15).stream().map(Director::new).collect(Collectors.toSet());
+        } catch (FilmwebException e) {
+            e.printStackTrace();
+        }
+        return Collections.emptySet();
+    }
 }

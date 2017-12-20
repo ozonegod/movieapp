@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 

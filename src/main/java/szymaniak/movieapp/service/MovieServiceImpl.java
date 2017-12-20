@@ -1,22 +1,13 @@
 package szymaniak.movieapp.service;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import info.talacha.filmweb.models.Film;
-import info.talacha.filmweb.models.Profession;
 import info.talacha.filmweb.search.models.FilmSearchResult;
 import org.springframework.stereotype.Service;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBDetailed;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBGenre;
-import szymaniak.movieapp.model.domain.Actor;
-import szymaniak.movieapp.model.domain.Director;
 import szymaniak.movieapp.model.domain.Movie;
-import szymaniak.movieapp.model.domain.PersonInformation;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +16,6 @@ public class MovieServiceImpl implements MovieService {
     private MovieDBService movieDBService;
     private FilmwebService filmwebService;
     private MovieDBDetailed movieDB;
-    private FilmSearchResult movieFilmwebSummary;
     private Movie movie;
 
     public MovieServiceImpl(MovieDBService movieDBService, FilmwebService filmwebService) {
@@ -37,40 +27,38 @@ public class MovieServiceImpl implements MovieService {
     public Movie createMovie(String id) {
         movie = new Movie();
         movieDB = movieDBService.findMovieDetails(id);
-        movieFilmwebSummary = filmwebService.findMovieByOriginalTitle(movieDB, filmwebService.findMoviesByTitle(movieDB.getTitle()));
-        Optional<Film> movieFilmweb = filmwebService.findMovieById(movieFilmwebSummary.getId());
-        try {
-            populateBasicInformations(movieFilmweb);
-        } catch (MalformedURLException e) {
-            e.printStackTrace(); //TODO
-        }
+        Optional<FilmSearchResult> movieFilmwebSummary = filmwebService.findMovieByTitle(movieDB.getTitle(), filmwebService.findMoviesByTitle(movieDB.getTitle()));
+        movieFilmwebSummary.ifPresent(this::searchMovieOnFilmweb);
         addGenresToMovie();
-        addCrewToMovie(movieFilmweb, movieFilmwebSummary.getId());
         return movie;
     }
-    private void populateBasicInformations(Optional<Film> movieFilmweb) throws MalformedURLException {
+
+    private void searchMovieOnFilmweb(FilmSearchResult movieFilmwebSummary){
+        Optional<Film> movieFilmweb = filmwebService.findMovieById(movieFilmwebSummary.getId());
+        movieFilmweb.ifPresent(this::populateBasicInformations);
+        addCrewToMovie(movieFilmwebSummary.getId());
+    }
+
+    private void populateBasicInformations(Film movieFilmweb) {
         movie.setReleaseDate(movieDB.getReleaseDate());
         movie.setStatus(movieDB.getStatus());
         movie.setTitle(movieDB.getTitle());
-        movie.setDuration(movieFilmweb.isPresent()? movieFilmweb.get().getDuration(): 0);
-        movie.setFilmwebWebsite(movieFilmweb.isPresent()? movieFilmweb.get().getWebsiteURL(): new URL("http://filmweb.pl") );
+        movie.setDuration(movieFilmweb.getDuration());
+        movie.setFilmwebWebsite(movieFilmweb.getWebsiteURL());
         movie.setForAdult(movieDB.isAdult());
         movie.setImdbid(movieDB.getImdbId());
         movie.setOverwiew(movieDB.getOverview());
-        movie.setPolishOverwiew(movieFilmweb.isPresent()? movieFilmweb.get().getPlot():"Brak danych"); //TODO
-        movie.setPolishTitle(movieFilmweb.isPresent()? movieFilmweb.get().getPolishTitle(): "Brak danych"); //TODO
-        movie.setRate(movieFilmweb.isPresent()? movieFilmweb.get().getRate(): 0);
-        movie.setVotes(movieFilmweb.isPresent()? movieFilmweb.get().getVotes(): 0);
+        movie.setPolishOverwiew(movieFilmweb.getPlot());
+        movie.setPolishTitle(movieFilmweb.getPolishTitle());
+        movie.setRate(movieFilmweb.getRate());
+        movie.setVotes(movieFilmweb.getVotes());
     }
     private void addGenresToMovie(){
         movie.setGenres(movieDB.getGenres().stream().map(MovieDBGenre::getName).collect(Collectors.toList()));
     }
 
-    private void addCrewToMovie(Optional<Film> filmwebMovie, Long filmwebMovieId){
-
-        //filmwebService.findCrewByRole(filmwebMovieId, Profession.ACTOR, new Actor()).stream().map(personInformation -> )
-
-        //Set<PersonInformation> crewByRole = filmwebService.findCrewByRole(filmwebMovieId, Profession.ACTOR, new Actor());
-        //TODO
+    private void addCrewToMovie(Long filmwebMovieId){
+        movie.setActors(filmwebService.findActors(filmwebMovieId));
+        movie.setDirectors(filmwebService.findDirectors(filmwebMovieId));
     }
 }
