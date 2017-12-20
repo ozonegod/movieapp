@@ -30,8 +30,8 @@ public class Movie {
     private int votes;
     private float rate;
     @OneToMany(mappedBy = "movie")
-    private Set<CrewMember> listOfDirectors;
+    private Set<Director> directors;
     @OneToMany(mappedBy = "movie")
-    private Set<CrewMember> listOfActors;
+    private Set<Actor> actors;
 
 }

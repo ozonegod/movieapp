@@ -4,11 +4,10 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.net.URL;
-import java.util.Set;
 
 @Entity
 @Data
-public class CrewMember {
+public class Director implements PersonInformation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,6 +17,6 @@ public class CrewMember {
     private String name;
     private URL photoUrl;
     @ManyToOne
-    @JoinColumn(name="id", insertable = false, updatable = false)
+    @JoinColumn(name="id")
     private Movie movie;
 }

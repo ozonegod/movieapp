@@ -7,13 +7,16 @@ import info.talacha.filmweb.search.models.FilmSearchResult;
 import org.springframework.stereotype.Service;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBDetailed;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBGenre;
-import szymaniak.movieapp.model.domain.CrewMember;
+import szymaniak.movieapp.model.domain.Actor;
+import szymaniak.movieapp.model.domain.Director;
 import szymaniak.movieapp.model.domain.Movie;
+import szymaniak.movieapp.model.domain.PersonInformation;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,7 +67,10 @@ public class MovieServiceImpl implements MovieService {
     }
 
     private void addCrewToMovie(Optional<Film> filmwebMovie, Long filmwebMovieId){
-        movie.setListOfActors(filmwebService.findCrewByRole(filmwebMovieId, Profession.ACTOR));
-        movie.setListOfDirectors(filmwebService.findCrewByRole(filmwebMovieId, Profession.DIRECTOR));
+
+        //filmwebService.findCrewByRole(filmwebMovieId, Profession.ACTOR, new Actor()).stream().map(personInformation -> )
+
+        //Set<PersonInformation> crewByRole = filmwebService.findCrewByRole(filmwebMovieId, Profession.ACTOR, new Actor());
+        //TODO
     }
 }

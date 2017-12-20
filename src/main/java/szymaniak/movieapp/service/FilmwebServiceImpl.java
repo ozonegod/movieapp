@@ -8,7 +8,8 @@ import info.talacha.filmweb.models.Profession;
 import info.talacha.filmweb.search.models.FilmSearchResult;
 import org.springframework.stereotype.Service;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBDetailed;
-import szymaniak.movieapp.model.domain.CrewMember;
+import szymaniak.movieapp.model.domain.Actor;
+import szymaniak.movieapp.model.domain.PersonInformation;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,9 +52,8 @@ public class FilmwebServiceImpl implements FilmwebService {
     }
 
     @Override
-    public Set<CrewMember> findCrewByRole(Long id, Profession role) {
-        Function<Person, CrewMember> parseToCrewMember = person -> {
-            CrewMember crewMember = new CrewMember();
+    public Set<PersonInformation> findCrewByRole(Long id, Profession role, PersonInformation crewMember) {
+        Function<Person, PersonInformation> parseToCrewMember = person -> {
             crewMember.setId(person.getId());
             crewMember.setInfo(person.getInfo());
             crewMember.setName(person.getName());
