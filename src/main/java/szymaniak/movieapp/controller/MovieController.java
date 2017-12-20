@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import szymaniak.movieapp.model.domain.Movie;
 import szymaniak.movieapp.service.MovieService;
 
 @Controller
@@ -18,7 +19,7 @@ public class MovieController {
 
     @GetMapping(value="/{id}")
     public String showDetailsOfMovie(@PathVariable String id){
-        movieService.createMovie(id);
+        Movie movie = movieService.createMovie(id);
         return "movie/details.html";
     }
 }

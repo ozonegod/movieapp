@@ -3,13 +3,20 @@ package szymaniak.movieapp.service;
 import info.talacha.filmweb.api.FilmwebApi;
 import info.talacha.filmweb.connection.FilmwebException;
 import info.talacha.filmweb.models.Film;
+import info.talacha.filmweb.models.Person;
+import info.talacha.filmweb.models.Profession;
 import info.talacha.filmweb.search.models.FilmSearchResult;
 import org.springframework.stereotype.Service;
 import szymaniak.movieapp.model.MovieDBSummary.MovieDBDetailed;
+import szymaniak.movieapp.model.domain.CrewMember;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Service
 public class FilmwebServiceImpl implements FilmwebService {
@@ -42,4 +49,24 @@ public class FilmwebServiceImpl implements FilmwebService {
         }
         return Optional.empty();
     }
+
+    @Override
+    public Set<CrewMember> findCrewByRole(Long id, Profession role) {
+        Function<Person, CrewMember> parseToCrewMember = person -> {
+            CrewMember crewMember = new CrewMember();
+            crewMember.setId(person.getId());
+            crewMember.setInfo(person.getInfo());
+            crewMember.setName(person.getName());
+            crewMember.setPhotoUrl(person.getPhotoUrl());
+            crewMember.setRole(person.getRole());
+            return crewMember;
+        };
+        try {
+            return filmwebApi.getPersons(id, role, 0, 10).stream().map(parseToCrewMember).collect(Collectors.toSet());
+        } catch (FilmwebException e) {
+            e.printStackTrace(); //TODO
+        }
+        return Collections.emptySet();
+    }
+
 }
